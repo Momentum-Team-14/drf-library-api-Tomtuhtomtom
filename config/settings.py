@@ -146,6 +146,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AUTH_USER_MODEL = "habit_tracker.CustomUser"
+AUTH_USER_MODEL = "library_api.CustomUser"
 # SIMPLE_BACKEND_REDIRECT_URL = '/'
 # LOGIN_REDIRECT_URL = '/'
