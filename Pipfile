@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+psycopg2-binary = "*"
+django-environ = "*"
+django-on-heroku = "*"
+gunicorn = "*"
+django-registration-redux = "*"
+django-extensions = "*"
+django-debug-toolbar = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
