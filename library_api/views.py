@@ -1,3 +1,47 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
+from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from .models import Book, Track, Note, CustomUser
+from .serializers import BookSerializer, TrackSerializer, NoteSerializer
 
-# Create your views here.
+
+class BookList(generics.ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+class BookDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+class TrackList(generics.ListCreateAPIView):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer
+
+
+class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer
+
+
+class NoteList(generics.ListCreateAPIView):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+
+
+class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'books': reverse('book-list', request=request, format=format),
+        'tracks': reverse('track-list', request=request, format=format),
+        'notess': reverse('note-list', request=request, format=format),
+    })

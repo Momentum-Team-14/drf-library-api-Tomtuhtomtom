@@ -27,8 +27,6 @@ class Book(models.Model):
 
 
 class Track(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='track_users')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='track_books')
     WANT = 'WR'
     READING = 'RG'
     READ = 'RD'
@@ -37,6 +35,8 @@ class Track(models.Model):
         (READING, 'Reading'),
         (READ, 'Read'),
     ]
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='track_users')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='track_books')
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=WANT)
 
     def __str__(self):
