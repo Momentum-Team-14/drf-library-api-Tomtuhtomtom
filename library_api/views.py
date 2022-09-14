@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -21,11 +21,16 @@ class BookDetail(generics.RetrieveUpdateDestroyAPIView):
 class TrackList(generics.ListCreateAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class NoteList(generics.ListCreateAPIView):
