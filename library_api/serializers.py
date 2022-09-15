@@ -10,13 +10,17 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class TrackSerializer(serializers.ModelSerializer):
-    
+    user = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    book = serializers.SlugRelatedField(slug_field="title", read_only=True)
+
     class Meta:
         model = Track
         fields = ('id', 'user', 'book', 'status',)
 
 
 class NoteSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    book = serializers.SlugRelatedField(slug_field="title", read_only=True)
     
     class Meta:
         model = Note

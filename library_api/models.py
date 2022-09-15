@@ -27,9 +27,9 @@ class Book(models.Model):
 
 
 class Track(models.Model):
-    WANT = 'WR'
-    READING = 'RG'
-    READ = 'RD'
+    WANT = 'Want to read'
+    READING = 'Reading'
+    READ = 'Read'
     STATUS_CHOICES = [
         (WANT, 'Want to read'),
         (READING, 'Reading'),
