@@ -35,8 +35,8 @@ class Track(models.Model):
         (READING, 'Reading'),
         (READ, 'Read'),
     ]
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='track_users')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='track_books')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tracks')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='tracks')
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=WANT)
 
     def __str__(self):
@@ -44,8 +44,8 @@ class Track(models.Model):
 
 
 class Note(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='note_users')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='note_books')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notes')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='notes')
     created_at = models.DateTimeField(auto_now_add=True)
     note = models.TextField(max_length=200, blank=True, null=True, help_text='Write your notes here')
     private = models.BooleanField(default=True)
