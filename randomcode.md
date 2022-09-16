@@ -12,19 +12,19 @@ from .permissions import IsOwnerOrReadOnly
 class BookList(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = ()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, permissions.IsAdminUser,]
 
 
 class UserTrackList(generics.ListAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -34,7 +34,7 @@ class UserTrackList(generics.ListAPIView):
 class BookTrackListCreate(generics.ListCreateAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -48,54 +48,25 @@ class BookTrackListCreate(generics.ListCreateAPIView):
 class BookTrackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
-
-class UserNoteList(generics.ListAPIView):
-    queryset = Note.objects.all()
-    serializer_class = NoteSerializer
-    permission_classes = ()
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user.id).order_by('created_at')
 
 class NoteList(generics.ListCreateAPIView):
     queryset = Note.objects.all().order_by('-created_at')
     serializer_class = NoteSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    permission_classes = ()
-
-
-class BookNoteListCreate(generics.ListCreateAPIView):
-    queryset = Note.objects.all()
-    serializer_class = NoteSerializer
-    permission_classes = ()
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(book=self.kwargs['book_pk']).order_by('book')
-
-    def perform_create(self, serializer):
-        book = get_object_or_404(Book, pk=self.kwargs['book_pk'])
-        serializer.save(user=self.request.user, book=book)
-
-
-class BookNoteDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Note.objects.all()
-    serializer_class = NoteSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 
 @api_view(['GET'])
