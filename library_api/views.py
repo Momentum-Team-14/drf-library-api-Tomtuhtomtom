@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
@@ -21,28 +21,34 @@ class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, permissions.IsAdminUser,]
 
 
-class TrackList(generics.ListAPIView):
+class UserTrackList(generics.ListAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user)
+        return queryset.filter(user=self.request.user.id).order_by('book')
 
 
-class TrackListCreate(generics.ListCreateAPIView):
+class BookTrackListCreate(generics.ListCreateAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user, book=self.kwargs['book_pk'])
+        return queryset.filter(book=self.kwargs['book_pk']).order_by('book')
 
     def perform_create(self, serializer):
         book = get_object_or_404(Book, pk=self.kwargs['book_pk'])
         serializer.save(user=self.request.user, book=book)
+
+
+class BookTrackDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
