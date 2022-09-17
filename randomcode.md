@@ -76,3 +76,13 @@ def api_root(request, format=None):
         'tracks': reverse('track-list', request=request, format=format),
         'notes': reverse('note-list', request=request, format=format),
     })
+
+
+
+def search_by_artist_or_title(request):
+    query = request.GET.get("q")
+    results = Album.objects.filter(
+        Q(title__icontains=query) | Q(artist__name__icontains=query)
+    )
+
+    return render(request, "albums/list_albums.html", {"albums": results})

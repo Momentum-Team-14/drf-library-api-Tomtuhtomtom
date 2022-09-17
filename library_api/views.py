@@ -1,4 +1,3 @@
-from sqlite3 import IntegrityError
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
@@ -16,6 +15,12 @@ class BookList(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = ()
+
+    def perform_create(self, serializer):
+        try: 
+            serializer.save()
+        except IntegrityError:
+            raise ValidationError({"error": "Title already exists for this author"})
 
 
 class FeaturedBookList(generics.ListAPIView):
@@ -40,7 +45,7 @@ class UserTrackList(generics.ListAPIView):
         return queryset.filter(user=self.request.user.id).order_by('book')
 
 
-class BookTrackListCreate(generics.ListCreateAPIView):
+class BookTrackList(generics.ListCreateAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
     permission_classes = ()
@@ -52,10 +57,7 @@ class BookTrackListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         book = get_object_or_404(Book, pk=self.kwargs['book_pk'])
         serializer.save(user=self.request.user, book=book)
-        try: 
-            serializer.save(user=self.request.user, book=book)
-        except IntegrityError as error:
-            raise ValidationError({"error": error})
+
 
 class BookTrackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Track.objects.all()
@@ -85,7 +87,7 @@ class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = ()
 
 
-class BookNoteListCreate(generics.ListCreateAPIView):
+class BookNoteList(generics.ListCreateAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     permission_classes = ()
