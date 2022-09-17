@@ -43,8 +43,8 @@ class UserTrackList(generics.ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user.id).order_by('book')
+        queryset = self.request.user.tracks.all()
+        return queryset.order_by('status')
 
 
 class BookTrackList(generics.ListCreateAPIView):
@@ -79,8 +79,8 @@ class UserNoteList(generics.ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user=self.request.user.id).order_by('-created_at')
+        queryset = self.request.user.notes.all()
+        return queryset.order_by('-created_at')
 
 
 class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
