@@ -7,7 +7,7 @@ from rest_framework.reverse import reverse
 from rest_framework.serializers import ValidationError
 from .models import Book, Track, Note, CustomUser
 from .serializers import BookSerializer, TrackSerializer, NoteSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from django.db import IntegrityError
 
 
@@ -16,7 +16,7 @@ class BookList(generics.ListCreateAPIView):
     filter_backends = (filters.SearchFilter,)
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticated,)
 
     def perform_create(self, serializer):
         try: 
@@ -25,32 +25,38 @@ class BookList(generics.ListCreateAPIView):
             raise ValidationError({"error": "Title already exists for this author"})
 
 
-class FeaturedBookList(generics.ListAPIView):
-    queryset = Book.objects.filter(featured=True)
-    serializer_class = BookSerializer
-    permission_classes = ()
-
-
 class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = ()
+    permission_classes = (IsAdminOrReadOnly,)
+
+
+class FeaturedBookList(generics.ListAPIView):
+    queryset = Book.objects.filter(featured=True)
+    serializer_class = BookSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class UserTrackList(generics.ListAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (IsOwnerOrReadOnly,)
 
     def get_queryset(self):
         queryset = self.request.user.tracks.all()
         return queryset.order_by('status')
 
 
+class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Track.objects.all()
+    serializer_class = TrackSerializer
+    permission_classes = (IsOwnerOrReadOnly,)
+
+
 class BookTrackList(generics.ListCreateAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -64,19 +70,15 @@ class BookTrackList(generics.ListCreateAPIView):
 class BookTrackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
-    permission_classes = ()
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
-class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Track.objects.all()
-    serializer_class = TrackSerializer
-    permission_classes = ()
 
 
 class UserNoteList(generics.ListAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    permission_classes = ()
+    permission_classes = (IsOwnerOrReadOnly,)
 
     def get_queryset(self):
         queryset = self.request.user.notes.all()
@@ -86,13 +88,13 @@ class UserNoteList(generics.ListAPIView):
 class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    permission_classes = ()
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 class BookNoteList(generics.ListCreateAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -106,7 +108,7 @@ class BookNoteList(generics.ListCreateAPIView):
 class BookNoteDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-    permission_classes = ()
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 @api_view(['GET'])
