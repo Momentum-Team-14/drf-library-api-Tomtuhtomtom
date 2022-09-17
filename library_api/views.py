@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -12,6 +12,8 @@ from django.db import IntegrityError
 
 
 class BookList(generics.ListCreateAPIView):
+    search_fields = ['title', 'author']
+    filter_backends = (filters.SearchFilter,)
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = ()
