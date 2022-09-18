@@ -64,15 +64,16 @@ class BookTrackList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         book = get_object_or_404(Book, pk=self.kwargs['book_pk'])
-        serializer.save(user=self.request.user, book=book)
+        try:
+            serializer.save(user=self.request.user, book=book)
+        except IntegrityError:
+            raise ValidationError({"error": "You've already recorded a status for this book"})
 
 
 class BookTrackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
     permission_classes = (IsOwnerOrReadOnly,)
-
-
 
 
 class UserNoteList(generics.ListAPIView):

@@ -39,6 +39,11 @@ class Track(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='tracks')
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=WANT)
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["user", "book"], name="unique_user")
+        ]
+
     def __str__(self):
         return f'{self.status} {self.book}'
 
