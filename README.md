@@ -2,13 +2,25 @@
 
 Create a new API-only application that lets users keep track of books, including important information like title, author, publication date, a genre, and a field that marks it as "featured". Books should be unique by title and author (that is, you can't have two books with the same title _and_ author; two books with the same title is fine as long as the authors are different).
 
+1.  users track books
+2.  book has title, author, publication date, genre, featured
+3.  constraint for book by title and author(title can be same if author is different)
+
 Users should be able to search for a book by title or author.
+
+1.  sort book by title or author
 
 Anyone can add a new book as long as the same book is not already in the library. Only admin users can update book details (like whether it is "featured") and delete books.
 
+1.  users can create a book if not already in library
+2.  admin can update book details(featured) and delete books
+
 You'll also need a book tracking model so that users can mark a book as "want to read", "reading", or "read/done"; this status can also be updated. The tracking model should have a foreign key to a book and to a user.
+1.  tracking model has status and foreign keys to books and to users
 
 Optionally users can take notes on books. These notes have a foreign key relationship with a book and a user, a datetime they are created, a note body, a boolean field marking it as public or private, and an optional page number. Private notes are viewable only by the author. When notes are retrieved, return them by creation time in reverse order.
+1.  Users make notes on books - created time, public/private setting, page number optional
+2.  Retreive by reverse date
 
 Users should be able to see a list of all the books they are tracking, or a list by status (for instance, all their "want to read" books). You _could_ consider using [DjangoFilterBackend](https://www.django-rest-framework.org/api-guide/filtering/#djangofilterbackend) for this.
 
