@@ -9,6 +9,7 @@ from .models import Book, Track, Note, CustomUser
 from .serializers import BookSerializer, TrackSerializer, NoteSerializer
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from django.db import IntegrityError
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class BookList(generics.ListCreateAPIView):
@@ -41,10 +42,12 @@ class UserTrackList(generics.ListAPIView):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
     permission_classes = (IsOwnerOrReadOnly,)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
 
     def get_queryset(self):
         queryset = self.request.user.tracks.all()
-        return queryset.order_by('status')
+        return queryset.order_by('book')
 
 
 class TrackDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -80,6 +83,8 @@ class UserNoteList(generics.ListAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     permission_classes = (IsOwnerOrReadOnly,)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['private']
 
     def get_queryset(self):
         queryset = self.request.user.notes.all()

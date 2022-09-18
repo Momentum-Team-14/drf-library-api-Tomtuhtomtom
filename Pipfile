@@ -14,6 +14,7 @@ django-extensions = "*"
 django-debug-toolbar = "*"
 djangorestframework = "*"
 pygments = "*"
+django-filter = "*"
 
 [dev-packages]
 
